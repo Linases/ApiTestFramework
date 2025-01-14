@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Modules;
 
 namespace Wrappers;
 
@@ -11,11 +12,24 @@ public class ReqresHttpClient
         _httpClient = new HttpClient();
     }
 
-    public async Task<T> GetAsync<T>(string url)
+    public ApiResult<TResult> Get<TResult>(Uri uri)
     {
-        var response = await _httpClient.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<T>(content);
+      var response = GetHttpResponseMessage(uri);
+        //response.EnsureSuccessStatusCode();
+
+        var responseContent = JsonSerializer.Deserialize<ApiResult<TResult>>(response.Content.ReadAsStringAsync().Result)!;
+
+        return responseContent;
     }
+
+    public HttpResponseMessage GetHttpResponseMessage(Uri uri)
+    {
+        var builder = new UriBuilder(uri);
+
+        var request = new HttpRequestMessage(HttpMethod.Get, builder.Uri);
+        var response = _httpClient.SendAsync(request).Result;
+
+        return response;
+    }
+
 }

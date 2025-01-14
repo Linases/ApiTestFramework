@@ -5,18 +5,15 @@ namespace Api_Tests;
 
 public class UserTests
 {
-    private UserServices _userService;
-
-    [SetUp]
-    public void Setup()
-    {
-        _userService = new UserServices();
-    }
+    private readonly UserServices _userService = new ();
 
     [Test]
-    public async Task GetUsers_Page1_ShouldReturnCorrectUserIds()
+    public void GetUsers_Page1_ShouldReturnCorrectUserIds()
     {
-        var response = await _userService.GetUsersAsync(1);
+        var response = _userService.GetListUsers(1);
+        var statusCode = _userService.GetStatusCode(2);
+       Assert.That(statusCode.StatusCode, Is.EqualTo(""));
+
 
         Assert.That(1, Is.EqualTo(response.Page));
         Assert.That(6, Is.EqualTo(response.Data.Count));

@@ -4,20 +4,16 @@ namespace Services;
 
 public class UserServices
 {
-    private readonly ReqresHttpClient _httpClientWrapper;
+    private const string BaseUrl = "https://reqres.in/api/";
+    private readonly ReqresHttpClient _httpClient = new();
 
-    public UserServices()
-    {
-        _httpClientWrapper = new ReqresHttpClient();
-    }
+    public UsersList GetListUsers(int page) => _httpClient.Get<UsersList>(new Uri($"{BaseUrl}/users?page={page}")).Model;
 
-    public async Task<UserListResponse> GetUsersAsync(int page)
-    {
-        return await _httpClientWrapper.GetAsync<UserListResponse>($"https://reqres.in/api/users?page={page}");
-    }
+    public HttpResponseMessage GetStatusCode(int page) =>
+        _httpClient.GetHttpResponseMessage(new Uri($"{BaseUrl}/users?page={page}"));
 }
 
-public class UserListResponse
+public class UsersList
 {
     public int Page { get; set; }
     public int PerPage { get; set; }

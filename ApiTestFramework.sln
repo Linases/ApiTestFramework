@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wrappers", "Wrappers\Wrappers.csproj", "{2EEEB0DB-8337-4D3E-8B25-DF41D1725FD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "Helpers\Helpers.csproj", "{14D3EBA0-94B3-4869-9A81-88B06BB39DF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules", "Modules\Modules.csproj", "{14D3EBA0-94B3-4869-9A81-88B06BB39DF1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{CF0ACBF4-1FEB-4D8D-A6BB-498C4B2DD556}"
 EndProject
