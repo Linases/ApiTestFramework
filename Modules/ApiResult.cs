@@ -1,4 +1,6 @@
-﻿namespace Modules;
+﻿using Newtonsoft.Json;
+
+namespace Modules;
 
 public class ApiResult
 {
@@ -9,6 +11,7 @@ public class ApiResult
 
 public class ApiResult<T> : ApiResult
 {
-  //  [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+   [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public T Model { get; set; }
+
 }

@@ -1,25 +1,46 @@
 ﻿using System.Text.Json;
 using Modules;
+using Newtonsoft.Json;
 
 namespace Wrappers;
 
 public class ReqresHttpClient
 {
-    private readonly HttpClient _httpClient;
+    private static readonly HttpClient HttpClient;
 
-    public ReqresHttpClient()
+     static ReqresHttpClient()
     {
-        _httpClient = new HttpClient();
+        HttpClient = new HttpClient();
     }
 
-    public ApiResult<TResult> Get<TResult>(Uri uri)
+    // public ApiResult<TResult> Get<TResult>(Uri uri)
+    // {
+    //   var response = GetHttpResponseMessage(uri);
+    //   var responseContent = response.Content.ReadAsStringAsync().Result;
+    //
+    //  try
+    //   {
+    //       return JsonConvert.DeserializeObject<ApiResult<TResult>>(responseContent)!;
+    //   }
+    //   catch
+    //   {
+    //       throw new HttpRequestException($"Api request failed: {responseContent}");
+    //   }
+    // }
+
+    public TResult Get<TResult>(Uri uri)
     {
-      var response = GetHttpResponseMessage(uri);
-        //response.EnsureSuccessStatusCode();
+        var builder = new UriBuilder(uri);
+        var request = new HttpRequestMessage(HttpMethod.Get, builder.Uri);
 
-        var responseContent = JsonSerializer.Deserialize<ApiResult<TResult>>(response.Content.ReadAsStringAsync().Result)!;
+        var response = HttpClient.SendAsync(request).Result;
 
-        return responseContent;
+        if (typeof(TResult) == typeof(HttpResponseMessage))
+        {
+            return (TResult)Convert.ChangeType(response, typeof(TResult));
+        }
+
+        return JsonConvert.DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result)!;
     }
 
     public HttpResponseMessage GetHttpResponseMessage(Uri uri)
@@ -27,9 +48,8 @@ public class ReqresHttpClient
         var builder = new UriBuilder(uri);
 
         var request = new HttpRequestMessage(HttpMethod.Get, builder.Uri);
-        var response = _httpClient.SendAsync(request).Result;
+        var response = HttpClient.SendAsync(request).Result;
 
         return response;
     }
-
 }
