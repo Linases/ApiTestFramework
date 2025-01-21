@@ -59,4 +59,10 @@ public class UserTests
             Assert.That(singleUserSupport.Url, Is.EqualTo(SupportFields.Url));
         });
     }
-}
+
+    [Test]
+    public void GetSingleNotFound()
+    {
+        var statusCodeForSingleUser = UserServices.GetStatusCodeForSingleUser(23);
+        Assert.That(statusCodeForSingleUser.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+    }}
