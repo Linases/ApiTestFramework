@@ -10,8 +10,13 @@ public class UserServices
 
     public static UsersList GetListUsers(int page) => HttpClient.Get<UsersList>(new Uri($"{BaseUrl}/users?page={page}"));
 
-    public static HttpResponseMessage GetStatusCode(int page) =>
+    public static HttpResponseMessage GetStatusCodeForListUsers(int page) =>
         HttpClient.GetHttpResponseMessage(new Uri($"{BaseUrl}/users?page={page}"));
+
+    public static HttpResponseMessage GetStatusCodeForSingleUser(int userId) =>
+        HttpClient.GetHttpResponseMessage(new Uri($"{BaseUrl}/users/{userId}"));
+
+    public static SingleUser GetSingleUser(int userId) => HttpClient.Get<SingleUser>(new Uri($"{BaseUrl}/users/{userId}"));
 }
 
 

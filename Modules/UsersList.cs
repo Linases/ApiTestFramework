@@ -11,9 +11,7 @@ public class UsersList
     public int Total { get; set; }
     [JsonProperty("total_pages")]
     public int TotalPages { get; set; }
-    public List<User> Data { get; set; } = new();
+    public List<User> Data { get; set; }
 
-public UsersList()
-{}
-
+    public SupportField Support { get; set; }
 }
