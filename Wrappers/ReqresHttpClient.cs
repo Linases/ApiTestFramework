@@ -1,14 +1,9 @@
-﻿using System.Net.Mime;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Text.Json;
-using Modules;
+﻿using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Wrappers;
 
-public class ReqresHttpClient
+public static class ReqresHttpClient
 {
     private static readonly HttpClient HttpClient;
 
@@ -17,23 +12,7 @@ public class ReqresHttpClient
         HttpClient = new HttpClient();
     }
 
-    public ApiResult<TResult> GetApi<TResult>(Uri uri)
-    {
-      var response = GetHttpResponseMessage(uri);
-      var responseContent = response.Content.ReadAsStringAsync().Result;
-
-     try
-      {
-          return JsonConvert.DeserializeObject<ApiResult<TResult>>(responseContent)!;
-      }
-      catch
-      {
-          throw new HttpRequestException($"Api request failed: {responseContent}");
-      }
-    }
-
-
-    public TResult Get<TResult>(Uri uri)
+    public static TResult Get<TResult>(Uri uri)
     {
         var builder = new UriBuilder(uri);
         var request = new HttpRequestMessage(HttpMethod.Get, builder.Uri);
@@ -48,23 +27,19 @@ public class ReqresHttpClient
         return JsonConvert.DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result);
     }
 
-    public TResult Post<TResult>(
+    public static (HttpResponseMessage responce,TResult result) PostOrPutOrPatch<TResult>(
         Uri uri,
-        object content
+        object content,
+        HttpMethod httpMethod
     )
     {
-        // var customSettings = new JsonSerializerSettings
-        // {
-        //     TypeNameHandling = TypeNameHandling.Auto,
-        //     TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
-        //     SerializationBinder = new DefaultSerializationBinder(),
-        // };
         var contentJson = JsonConvert.SerializeObject(content);
         var responseMessage = SendRequest();
 
         try
         {
-            return JsonConvert.DeserializeObject<TResult>(responseMessage.Content.ReadAsStringAsync().Result)!;
+           TResult result = JsonConvert.DeserializeObject<TResult>(responseMessage.Content.ReadAsStringAsync().Result)!;
+           return (responseMessage,result);
         }
         catch (Exception exception)
         {
@@ -74,7 +49,7 @@ public class ReqresHttpClient
 
         HttpResponseMessage SendRequest()
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, uri);
+            var request = new HttpRequestMessage(httpMethod, uri);
             request.Content = new StringContent(contentJson, Encoding.UTF8, "application/json");
 
             var response = HttpClient.SendAsync(request).Result;
@@ -83,23 +58,7 @@ public class ReqresHttpClient
         }
     }
 
-    public TResult Delete<TResult>(Uri uri)
-    {
-            var request = new HttpRequestMessage(HttpMethod.Delete, uri);
-            var response = HttpClient.SendAsync(request).Result;
-
-        try
-        {
-            return JsonConvert.DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result);
-        }
-        catch (Exception e)
-        {
-            throw new HttpRequestException($"Api request failed: {response.Content.ReadAsStringAsync().Result} \n {e.Message}");
-        }
-    }
-
-
-    public HttpResponseMessage GetHttpResponseMessage(Uri uri)
+    public static  HttpResponseMessage GetHttpResponseMessage(Uri uri)
     {
         var builder = new UriBuilder(uri);
 
@@ -109,7 +68,7 @@ public class ReqresHttpClient
         return response;
     }
 
-    public HttpResponseMessage Delete(Uri uri)
+    public static HttpResponseMessage Delete(Uri uri)
     {
         var builder = new UriBuilder(uri);
 
