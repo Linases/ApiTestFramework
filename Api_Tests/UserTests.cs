@@ -65,4 +65,50 @@ public class UserTests
     {
         var statusCodeForSingleUser = UserServices.GetStatusCodeForSingleUser(23);
         Assert.That(statusCodeForSingleUser.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
-    }}
+    }
+
+    [Test]
+    public void CreateUser()
+    {
+        var model = new JobNamePairVm("morpheus", "leader");
+        var createdUserResponse = UserServices.PostCreate(model);
+        Assert.That(createdUserResponse.CreatedAt.Date.ToShortDateString(),
+            Is.EqualTo(DateTime.Now.ToShortDateString()));
+        Assert.That(createdUserResponse.Name, Is.EqualTo("morpheus"));
+        Assert.That(createdUserResponse.Id, Is.InstanceOf(typeof(int)));
+        Assert.That(createdUserResponse.Job, Is.EqualTo("leader"));
+
+        // Assert.That(createdUserResponse.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+    }
+
+    [Test]
+    public void GetDelayedResponse()
+    {
+        var delayedUsersList = UserServices.GetDelayedUsers();
+        Assert.That(delayedUsersList.TotalPages, Is.EqualTo(2));
+    }
+
+    [Test]
+    public void DeleteUser()
+    {
+        var responce = UserServices.DeleteUser(2);
+        Assert.That(responce.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+    }
+
+    [Test]
+    public void RegisterUnsuccessful()
+    {
+        var model = new RegistrationPair("sydney@fife", null);
+        var responce = UserServices.Register(model);
+      //  Assert.That(responce.StatusCode, Is.EqualTo(HttpStatusCode.NoContent));
+    }
+
+    [Test]
+    public void RegisterSuccessful()
+    {
+        var model = new RegistrationPair("eve.holt@reqres.in@fife", "pistol");
+        var responce = UserServices.Register(model);
+        Assert.That(responce.Email, Is.EqualTo(HttpStatusCode.NoContent));
+        Assert.That(responce.Email, Is.EqualTo(HttpStatusCode.NoContent));
+    }
+}
