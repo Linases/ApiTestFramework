@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Modules;
 
-public class UsersList
+public class UsersListVm
 {
     public int Page { get; set; }
     [JsonProperty("per_page")]
@@ -11,7 +11,7 @@ public class UsersList
     public int Total { get; set; }
     [JsonProperty("total_pages")]
     public int TotalPages { get; set; }
-    public List<User> Data { get; set; }
+    public List<UserVm> Data { get; set; }
 
-    public SupportField Support { get; set; }
+    public SupportFieldVm Support { get; set; }
 }

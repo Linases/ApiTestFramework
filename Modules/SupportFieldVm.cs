@@ -1,6 +1,6 @@
 ﻿namespace Modules;
 
-public class SupportField
+public class SupportFieldVm
 {
     public string Url { get; set; }
     public string Text { get; set; }
