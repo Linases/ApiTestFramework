@@ -7,27 +7,31 @@ public static class ReqresHttpClient
 {
     private static readonly HttpClient HttpClient;
 
-     static ReqresHttpClient()
+    static ReqresHttpClient()
     {
         HttpClient = new HttpClient();
     }
 
-    public static TResult Get<TResult>(Uri uri)
+    public static (HttpResponseMessage response, TResult result) Get<TResult>(Uri uri)
     {
         var builder = new UriBuilder(uri);
         var request = new HttpRequestMessage(HttpMethod.Get, builder.Uri);
-
         var response = HttpClient.SendAsync(request).Result;
 
-        if (typeof(TResult) == typeof(HttpResponseMessage))
+        try
         {
-            return (TResult)Convert.ChangeType(response, typeof(TResult));
-        }
+            TResult result = JsonConvert.DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result)!;
 
-        return JsonConvert.DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result);
+            return (response, result);
+        }
+        catch (Exception exception)
+        {
+            throw new HttpRequestException(
+                $"Api request failed: {response.Content.ReadAsStringAsync().Result} Inner exception: {exception.Message}");
+        }
     }
 
-    public static (HttpResponseMessage responce,TResult result) PostOrPutOrPatch<TResult>(
+    public static (HttpResponseMessage response, TResult result) PostOrPutOrPatch<TResult>(
         Uri uri,
         object content,
         HttpMethod httpMethod
@@ -38,8 +42,10 @@ public static class ReqresHttpClient
 
         try
         {
-           TResult result = JsonConvert.DeserializeObject<TResult>(responseMessage.Content.ReadAsStringAsync().Result)!;
-           return (responseMessage,result);
+            TResult result =
+                JsonConvert.DeserializeObject<TResult>(responseMessage.Content.ReadAsStringAsync().Result)!;
+
+            return (responseMessage, result);
         }
         catch (Exception exception)
         {
@@ -58,10 +64,9 @@ public static class ReqresHttpClient
         }
     }
 
-    public static  HttpResponseMessage GetHttpResponseMessage(Uri uri)
+    public static HttpResponseMessage GetHttpResponseMessage(Uri uri)
     {
         var builder = new UriBuilder(uri);
-
         var request = new HttpRequestMessage(HttpMethod.Get, builder.Uri);
         var response = HttpClient.SendAsync(request).Result;
 

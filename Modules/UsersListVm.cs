@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace Modules;
@@ -12,6 +11,5 @@ public class UsersListVm
     [JsonProperty("total_pages")]
     public int TotalPages { get; set; }
     public List<UserVm> Data { get; set; }
-
     public SupportFieldVm Support { get; set; }
 }
