@@ -24,23 +24,23 @@ public class UserTests
         // Verify page number, users per page, total users
         // Verify users count in "data" object
         // Verify status code
-        var (firstPageUsersMessage, firstPageUsersResponse) = UserServices.GetListUsers(FirstPageNr);
+        var (firstPageUsersMessage, firstPageUsersInfo) = UserServices.GetListUsers(FirstPageNr);
         Assert.Multiple(() =>
         {
             Assert.That(firstPageUsersMessage.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(firstPageUsersResponse.Page, Is.EqualTo(FirstPageNr));
-            Assert.That(firstPageUsersResponse.PerPage, Is.EqualTo(6));
-            Assert.That(firstPageUsersResponse.Total, Is.EqualTo(12));
-            Assert.That(firstPageUsersResponse.Data.Count, Is.EqualTo(6));
-            Assert.That(firstPageUsersResponse.Data.Select(u => u.Id), Is.EqualTo(Enumerable.Range(1, 6)));
+            Assert.That(firstPageUsersInfo.Page, Is.EqualTo(FirstPageNr));
+            Assert.That(firstPageUsersInfo.PerPage, Is.EqualTo(6));
+            Assert.That(firstPageUsersInfo.Total, Is.EqualTo(12));
+            Assert.That(firstPageUsersInfo.Data.Count, Is.EqualTo(6));
+            Assert.That(firstPageUsersInfo.Data.Select(u => u.Id), Is.EqualTo(Enumerable.Range(1, 6)));
         });
 
         // Verify Ids of users in "data" (if page = 1, user's ids should be - 1-6, if page =2, user's ids - 7-12)
-        var (secondPageUsersMessage, secondPageUsersResponse) = UserServices.GetListUsers(SecondPageNr);
+        var (secondPageUsersMessage, secondPageUsersInfo) = UserServices.GetListUsers(SecondPageNr);
         Assert.Multiple(() =>
         {
             Assert.That(secondPageUsersMessage.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(secondPageUsersResponse.Data.Select(u => u.Id), Is.EqualTo(Enumerable.Range(7, 6)));
+            Assert.That(secondPageUsersInfo.Data.Select(u => u.Id), Is.EqualTo(Enumerable.Range(7, 6)));
         });
     }
 
@@ -55,9 +55,9 @@ public class UserTests
         var secondUserEmail = firstPageUsersData[1].Email;
         var secondUserAvatar = firstPageUsersData[1].Avatar;
 
-        var (singleUserMessage, singleUserResponse) = UserServices.GetSingleUser(UserId);
-        var singleUserData = singleUserResponse.Data;
-        var singleUserSupport = singleUserResponse.Support;
+        var (singleUserMessage, singleUserInfo) = UserServices.GetSingleUser(UserId);
+        var singleUserData = singleUserInfo.Data;
+        var singleUserSupport = singleUserInfo.Support;
         Assert.Multiple(() =>
         {
             Assert.That(singleUserMessage.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -86,14 +86,14 @@ public class UserTests
         // Verify whole response model
         // Verify status code
         var model = new JobNamePair(Name, Job);
-        var (responseMessage, createUserResponse) = UserServices.PostCreate(model);
+        var (responseMessage, createUserResponseInfo) = UserServices.PostCreate(model);
         Assert.Multiple(() =>
         {
-            Assert.That(createUserResponse.CreatedAt.Date.ToShortDateString(),
+            Assert.That(createUserResponseInfo.CreatedAt.Date.ToShortDateString(),
                 Is.EqualTo(DateTime.Now.ToShortDateString()));
-            Assert.That(createUserResponse.Name, Is.EqualTo(Name));
-            Assert.That(createUserResponse.Id, Is.InstanceOf(typeof(int)));
-            Assert.That(createUserResponse.Job, Is.EqualTo(Job));
+            Assert.That(createUserResponseInfo.Name, Is.EqualTo(Name));
+            Assert.That(createUserResponseInfo.Id, Is.InstanceOf(typeof(int)));
+            Assert.That(createUserResponseInfo.Job, Is.EqualTo(Job));
             Assert.That(responseMessage.StatusCode, Is.EqualTo(HttpStatusCode.Created));
         });
     }
@@ -130,11 +130,11 @@ public class UserTests
         // Verify whole response model
         // Verify response status code
         var model = new EmailPasswordPair(Email, null);
-        var (registerMessage, registerUserResponse) = UserServices.Register(model);
+        var (registerMessage, registerUserResponseInfo) = UserServices.Register(model);
         Assert.Multiple(() =>
         {
             Assert.That(registerMessage.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
-            Assert.That(registerUserResponse.Error, Is.EqualTo(Errors.MissingPassword));
+            Assert.That(registerUserResponseInfo.Error, Is.EqualTo(Errors.MissingPassword));
         });
     }
 
@@ -146,11 +146,11 @@ public class UserTests
         const int userId = 4;
         const string token = "QpwL5tke4Pnpja7X4";
         var model = new EmailPasswordPair(Email, Password);
-        var (registerMessage, registerUserResponse) = UserServices.Register(model);
+        var (registerMessage, registerUserResponseInfo) = UserServices.Register(model);
         Assert.Multiple(() =>
         {
-            Assert.That(registerUserResponse.Id, Is.EqualTo(userId));
-            Assert.That(registerUserResponse.Token, Is.EqualTo(token));
+            Assert.That(registerUserResponseInfo.Id, Is.EqualTo(userId));
+            Assert.That(registerUserResponseInfo.Token, Is.EqualTo(token));
             Assert.That(registerMessage.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         });
     }

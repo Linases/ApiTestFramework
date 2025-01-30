@@ -31,11 +31,8 @@ public static class ReqresHttpClient
         }
     }
 
-    public static (HttpResponseMessage response, TResult result) PostOrPutOrPatch<TResult>(
-        Uri uri,
-        object content,
-        HttpMethod httpMethod
-    )
+    public static (HttpResponseMessage response, TResult result) PostOrPutOrPatch<TResult>(Uri uri, object content,
+        HttpMethod httpMethod)
     {
         var contentJson = JsonConvert.SerializeObject(content);
         var responseMessage = SendRequest();
@@ -62,15 +59,6 @@ public static class ReqresHttpClient
 
             return response;
         }
-    }
-
-    public static HttpResponseMessage GetHttpResponseMessage(Uri uri)
-    {
-        var builder = new UriBuilder(uri);
-        var request = new HttpRequestMessage(HttpMethod.Get, builder.Uri);
-        var response = HttpClient.SendAsync(request).Result;
-
-        return response;
     }
 
     public static HttpResponseMessage Delete(Uri uri)
