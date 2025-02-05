@@ -20,7 +20,7 @@ public static class ReqresHttpClient
 
         try
         {
-            TResult result = JsonConvert.DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result)!;
+            var result = JsonConvert.DeserializeObject<TResult>(response.Content.ReadAsStringAsync().Result)!;
 
             return (response, result);
         }
@@ -39,7 +39,7 @@ public static class ReqresHttpClient
 
         try
         {
-            TResult result =
+            var result =
                 JsonConvert.DeserializeObject<TResult>(responseMessage.Content.ReadAsStringAsync().Result)!;
 
             return (responseMessage, result);

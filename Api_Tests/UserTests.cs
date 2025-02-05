@@ -14,8 +14,8 @@ public class UserTests
     private const string Email = "eve.holt@reqres.in";
     private const string Password = "pistol";
     private const int UserId = 2;
-    private const int FirstPageNr = 1;
-    private const int SecondPageNr = 2;
+    private const int PageOneNumber = 1;
+    private const int PageTwoNumber = 2;
     private const int TotalPages = 2;
 
     [Test]
@@ -24,11 +24,11 @@ public class UserTests
         // Verify page number, users per page, total users
         // Verify users count in "data" object
         // Verify status code
-        var (firstPageUsersMessage, firstPageUsersInfo) = UserServices.GetListUsers(FirstPageNr);
+        var (firstPageUsersMessage, firstPageUsersInfo) = UserServices.GetListUsers(PageOneNumber);
         Assert.Multiple(() =>
         {
             Assert.That(firstPageUsersMessage.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            Assert.That(firstPageUsersInfo.Page, Is.EqualTo(FirstPageNr));
+            Assert.That(firstPageUsersInfo.Page, Is.EqualTo(PageOneNumber));
             Assert.That(firstPageUsersInfo.PerPage, Is.EqualTo(6));
             Assert.That(firstPageUsersInfo.Total, Is.EqualTo(12));
             Assert.That(firstPageUsersInfo.Data.Count, Is.EqualTo(6));
@@ -36,7 +36,7 @@ public class UserTests
         });
 
         // Verify Ids of users in "data" (if page = 1, user's ids should be - 1-6, if page =2, user's ids - 7-12)
-        var (secondPageUsersMessage, secondPageUsersInfo) = UserServices.GetListUsers(SecondPageNr);
+        var (secondPageUsersMessage, secondPageUsersInfo) = UserServices.GetListUsers(PageTwoNumber);
         Assert.Multiple(() =>
         {
             Assert.That(secondPageUsersMessage.StatusCode, Is.EqualTo(HttpStatusCode.OK));
