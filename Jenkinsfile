@@ -38,13 +38,14 @@ pipeline {
                 bat "dotnet test ApiTestFramework.sln --no-build --logger \"trx;LogFileName=test_results.trx\""
                 bat "dotnet tool install -g trx2junit"
                 bat "%USERPROFILE%\\.dotnet\\tools\\trx2junit TestResults\\test_results.trx"
+                bat "dir TestResults"
             }
         }
     }
 
     post {
         always {
-            junit '**/TestResults/*.xml'
+            junit "TestResults/test_results.xml"
         }
     }
 }
