@@ -34,6 +34,7 @@ pipeline {
 
         stage('Test') {
             steps {
+                bat "if exist TestResults rmdir /s /q TestResults"
                 bat "mkdir TestResults"
                 bat "dotnet test ApiTestFramework.sln --no-build --logger \"trx;LogFileName=TestResults\\test_results.trx\""
                 bat "dotnet tool install -g trx2junit"
