@@ -34,7 +34,8 @@ pipeline {
 
         stage('Test') {
             steps {
-                bat "dotnet test ApiTestFramework.sln --no-build --logger \"trx;LogFileName=test_results.trx\""
+                bat "mkdir TestResults"
+                bat "dotnet test Diploma_OrangeHRM.sln --no-build --logger \\\"junit;LogFilePath=TestResults\\\\test-results.xml\\\""
             }
         }
     }
