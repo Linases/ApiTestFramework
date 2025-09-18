@@ -1,10 +1,26 @@
 pipeline {
     agent any
-
     stages {
-        stage('Test') {
+        stage('git repo & clean') {
             steps {
-                echo 'Running Tests'
+                bat "rmdir /s /q ApiTestFramework"
+                bat "git clone https://github.com/Linases/ApiTestFramework.git"
+                bat "mvn clean -f ApiTestFramework"
+            }
+        }
+        stage('install') {
+            steps {
+                bat "mvn install -f ApiTestFramework"
+            }
+        }
+        stage('test') {
+            steps {
+                bat "mvn test -f TApiTestFramework"
+            }
+        }
+        stage('package') {
+            steps {
+                bat "mvn package -f ApiTestFramework"
             }
         }
     }
