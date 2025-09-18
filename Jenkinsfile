@@ -24,7 +24,7 @@ pipeline {
 
         stage('Restore') {
             steps {
-                bat "dotnet restore %SOLUTION_DIR%"
+                 bat "dotnet restore ApiTestFramework/ApiTestFramework.sln"
             }
         }
 
