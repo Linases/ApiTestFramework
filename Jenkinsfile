@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        dotnetsdk 'dotnetsdk-6.0'
+        dotnetsdk 'dotnet-sdk-6.0'
     }
 
     environment {
