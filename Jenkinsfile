@@ -5,14 +5,12 @@ pipeline {
         dotnetsdk 'dotnet-sdk-6.0'
     }
 
-    environment {
-        SOLUTION_DIR = 'ApiTestFramework'
-    }
-
     stages {
         stage('Clean workspace') {
             steps {
-                bat 'rmdir /s /q ApiTestFramework.sln || exit 0'
+                script {
+                    deleteDir() 
+                }
             }
         }
 
@@ -43,7 +41,7 @@ pipeline {
 
     post {
         always {
-             junit '**/TestResults/*.xml'
+            junit '**/TestResults/*.xml'
         }
     }
 }
