@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Clean workspace') {
             steps {
-                bat 'rmdir /s /q %SOLUTION_DIR% || exit 0'
+                bat 'rmdir /s /q ApiTestFramework.sln || exit 0'
             }
         }
 
@@ -30,13 +30,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat "dotnet build %SOLUTION_DIR% --no-restore"
+                bat "dotnet build ApiTestFramework.sln --no-restore"
             }
         }
 
         stage('Test') {
             steps {
-                bat "dotnet test %SOLUTION_DIR% --no-build --logger \"trx;LogFileName=test_results.trx\""
+                bat "dotnet test ApiTestFramework.sln --no-build --logger \"trx;LogFileName=test_results.trx\""
             }
         }
     }
