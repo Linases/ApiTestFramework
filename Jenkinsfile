@@ -2,31 +2,48 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven_3.9.6'  
+         dotnet 'dotnet-sdk-6.0'
+    }
+
+    environment {
+        SOLUTION_DIR = 'ApiTestFramework'
     }
 
     stages {
-        stage('git repo & clean') {
+        stage('Clean workspace') {
             steps {
-                bat 'rmdir /s /q ApiTestFramework || exit 0'
-                bat 'git clone https://github.com/Linases/ApiTestFramework.git'
-                bat 'mvn clean -f ApiTestFramework'
+                bat 'rmdir /s /q %SOLUTION_DIR% || exit 0'
             }
         }
-        stage('install') {
+
+        stage('Checkout') {
             steps {
-                bat 'mvn install -f ApiTestFramework'
+                git 'https://github.com/Linases/ApiTestFramework.git'
             }
         }
-        stage('test') {
+
+        stage('Restore') {
             steps {
-                bat 'mvn test -f ApiTestFramework'
+                bat "dotnet restore %SOLUTION_DIR%"
             }
         }
-        stage('package') {
+
+        stage('Build') {
             steps {
-                bat 'mvn package -f ApiTestFramework'
+                bat "dotnet build %SOLUTION_DIR% --no-restore"
             }
+        }
+
+        stage('Test') {
+            steps {
+                bat "dotnet test %SOLUTION_DIR% --no-build --logger \"trx;LogFileName=test_results.trx\""
+            }
+        }
+    }
+
+    post {
+        always {
+             junit '**/TestResults/*.xml'
         }
     }
 }
