@@ -18,7 +18,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/Linases/ApiTestFramework.git'
+                git branch: 'main', url: 'https://github.com/Linases/ApiTestFramework.git'
             }
         }
 
